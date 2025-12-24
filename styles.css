@@ -1,0 +1,838 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --gold: #d4af37;
+    --light-gold: #f4e4b8;
+    --dark-gold: #b8941e;
+    --dark-bg: #1a1a1a;
+    --darker-bg: #0f0f0f;
+    --envelope-dark: #2a2a2a;
+}
+
+body {
+    font-family: 'Noto Serif KR', serif;
+    background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Floating Particles */
+.particles-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--gold);
+    border-radius: 50%;
+    opacity: 0;
+    animation: float 15s infinite;
+    box-shadow: 0 0 10px var(--gold);
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Envelope Container */
+.envelope-container {
+    position: relative;
+    z-index: 10;
+    perspective: 1000px;
+    transition: opacity 0.5s ease;
+}
+
+.envelope-container.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.envelope {
+    position: relative;
+    width: 600px;
+    height: 420px;
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease;
+}
+
+.envelope:hover {
+    transform: scale(1.02);
+}
+
+/* Envelope Back (하단 본체) */
+.envelope-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.envelope-back-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    object-position: top;
+}
+
+/* Envelope Flap (상단 뚜껑) */
+.envelope-flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    transform-origin: top center;
+    z-index: 2;
+    transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    overflow: hidden;    
+}
+
+.envelope-flap-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    object-position: top;
+    filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.5));
+}
+
+.envelope-flap.open {
+    transform: rotateX(180deg);
+}
+
+.envelope-flap.closing {
+    transition: transform 1s ease-out;
+}
+
+/* Wax Seal (실링 왁스) */
+.wax-seal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
+    z-index: 4;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wax-seal-img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    filter: drop-shadow(0 5px 20px rgba(212, 175, 55, 0.4));
+    transition: filter 0.3s ease;
+}
+
+.wax-seal:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.wax-seal:hover .wax-seal-img {
+    filter: drop-shadow(0 8px 30px rgba(212, 175, 55, 0.6));
+}
+
+.wax-seal:active {
+    transform: translate(-50%, -50%) scale(0.95);
+}
+
+.click-hint {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: var(--light-gold);
+    white-space: nowrap;
+    opacity: 0;
+    animation: fadeInOut 2s ease-in-out infinite;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.7; }
+}
+
+.wax-seal.clicked {
+    animation: sealBreak 0.6s ease forwards;
+}
+
+@keyframes sealBreak {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.2) rotate(10deg);
+        opacity: 0.5;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(0) rotate(180deg);
+        opacity: 0;
+    }
+}
+
+/* Letter Container */
+.letter-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.letter-container.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.letter {
+    background: url('images/letter-background.png');
+    background-size: calc(100% + 8px) 100%;
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-attachment: local;
+    border: 2px solid var(--gold);
+    max-width: 781px;
+    width: 100%;
+    padding: 60px 50px;
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.6),
+        inset 0 0 30px rgba(212, 175, 55, 0.05);
+    animation: letterSlideIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+}
+
+@keyframes letterSlideIn {
+    0% {
+        transform: translateY(100px) scale(0.8);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Letter Header */
+.letter-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.golden-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 20px 0;
+}
+
+.header-ornament {
+    width: 80px;
+    height: 40px;
+    margin: 0 auto;
+    background-image:
+        radial-gradient(circle at 50% 0%, var(--gold) 2px, transparent 2px),
+        radial-gradient(circle at 0% 50%, var(--gold) 2px, transparent 2px),
+        radial-gradient(circle at 100% 50%, var(--gold) 2px, transparent 2px);
+    background-size: 20px 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.6;
+}
+
+.header-ornament.bottom {
+    transform: rotate(180deg);
+}
+
+.club-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 56px;
+    font-weight: 300;
+    letter-spacing: 12px;
+    color: var(--gold);
+    margin: 20px 0 10px;
+    text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+}
+
+.subtitle {
+    font-size: 18px;
+    color: var(--light-gold);
+    letter-spacing: 4px;
+    font-weight: 300;
+}
+
+/* Invitation Message */
+.invitation-message {
+    text-align: center;
+    margin: 40px 0;
+    color: #e0e0e0;
+    line-height: 1.8;
+}
+
+.greeting {
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--light-gold);
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.message-body {
+    font-size: 16px;
+    color: #c0c0c0;
+    line-height: 1.9;
+}
+
+/* Event Details */
+.event-details {
+    margin: 50px 0;
+    display: grid;
+    gap: 30px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 25px;
+    background: rgba(42, 42, 42, 0.5);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-left: 3px solid var(--gold);
+    transition: all 0.3s ease;
+}
+
+.detail-item:hover {
+    background: rgba(42, 42, 42, 0.8);
+    border-left-width: 5px;
+    transform: translateX(5px);
+}
+
+.detail-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.detail-content {
+    flex: 1;
+}
+
+.detail-label {
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.detail-value {
+    font-size: 20px;
+    color: #e0e0e0;
+    font-weight: 400;
+    margin-bottom: 5px;
+}
+
+.detail-time,
+.detail-address {
+    font-size: 14px;
+    color: #a0a0a0;
+    margin-top: 5px;
+}
+
+/* Map Links */
+.map-links {
+    margin: 40px 0;
+    text-align: center;
+}
+
+.section-title {
+    font-size: 20px;
+    color: var(--gold);
+    letter-spacing: 3px;
+    margin-bottom: 25px;
+    text-align: center;
+    position: relative;
+    display: inline-block;
+    padding: 0 30px;
+}
+
+.section-title::before,
+.section-title::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 20px;
+    height: 1px;
+    background: var(--gold);
+}
+
+.section-title::before {
+    left: 0;
+}
+
+.section-title::after {
+    right: 0;
+}
+
+.map-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.map-button {
+    padding: 15px 35px;
+    background: linear-gradient(135deg, rgba(42, 42, 42, 0.8), rgba(31, 31, 31, 0.8));
+    border: 1px solid var(--gold);
+    color: var(--light-gold);
+    text-decoration: none;
+    font-size: 15px;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.map-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.map-button:hover::before {
+    left: 100%;
+}
+
+.map-button:hover {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(184, 148, 30, 0.2));
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
+}
+
+/* RSVP Section */
+.rsvp-section {
+    margin: 50px 0;
+    text-align: center;
+    padding: 40px 30px;
+    background: rgba(212, 175, 55, 0.05);
+    border: 2px solid var(--gold);
+    position: relative;
+}
+
+.rsvp-section::before,
+.rsvp-section::after {
+    content: '';
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border: 2px solid var(--gold);
+}
+
+.rsvp-section::before {
+    top: -2px;
+    left: -2px;
+    border-right: none;
+    border-bottom: none;
+}
+
+.rsvp-section::after {
+    bottom: -2px;
+    right: -2px;
+    border-left: none;
+    border-top: none;
+}
+
+.rsvp-description {
+    font-size: 15px;
+    color: #c0c0c0;
+    line-height: 1.8;
+    margin: 20px 0 30px;
+}
+
+.rsvp-button {
+    display: inline-block;
+    padding: 18px 50px;
+    background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+    color: var(--darker-bg);
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.rsvp-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.5s ease, height 0.5s ease;
+}
+
+.rsvp-button:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.rsvp-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(212, 175, 55, 0.5);
+}
+
+.rsvp-button span {
+    position: relative;
+    z-index: 1;
+}
+
+.rsvp-note {
+    font-size: 12px;
+    color: #808080;
+    margin-top: 15px;
+    font-style: italic;
+}
+
+/* Letter Footer */
+.letter-footer {
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 60px;
+    padding-top: 30px;
+    padding-bottom: 100px;
+    border-top: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.footer-ornament {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 15px auto;
+}
+
+.footer-text {
+    font-size: 16px;
+    color: var(--light-gold);
+    letter-spacing: 2px;
+    font-weight: 300;
+}
+
+/* Close Button */
+.close-button {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: rgba(42, 42, 42, 0.9);
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    color: var(--gold);
+    font-size: 32px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 30;
+}
+
+.close-button:hover {
+    background: var(--gold);
+    color: var(--darker-bg);
+    transform: rotate(90deg);
+}
+
+/* Scrollbar Styling */
+.letter::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+}
+
+.letter::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.letter::-webkit-scrollbar-thumb {
+    background: transparent;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    /* Envelope - 화면에 맞게 크기 조정 */
+    .envelope {
+        width: 90vw;
+        max-width: 400px;
+        height: auto;
+        aspect-ratio: 600/420;
+    }
+
+    .wax-seal {
+        width: 100px;
+        height: 100px;
+    }
+
+    .click-hint {
+        top: -35px;
+        font-size: 11px;
+    }
+
+    /* Letter - 모바일에 최적화 */
+    .letter {
+        padding: 40px 25px;
+        margin: 10px;
+        max-width: 95vw;
+        max-height: 85vh;
+        border-width: 1px;
+    }
+
+    /* Header - 크기 조정 */
+    .club-name {
+        font-size: 36px;
+        letter-spacing: 6px;
+        margin: 15px 0 8px;
+    }
+
+    .subtitle {
+        font-size: 14px;
+        letter-spacing: 3px;
+    }
+
+    .golden-line {
+        margin: 15px 0;
+    }
+
+    /* Message - 가독성 개선 */
+    .greeting {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    .message-body {
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    /* Event Details - 간격 조정 */
+    .event-details {
+        margin: 35px 0;
+        gap: 20px;
+    }
+
+    .detail-item {
+        padding: 18px 15px;
+        gap: 15px;
+    }
+
+    .detail-icon {
+        font-size: 24px;
+    }
+
+    .detail-label {
+        font-size: 11px;
+        letter-spacing: 1.5px;
+        margin-bottom: 6px;
+    }
+
+    .detail-value {
+        font-size: 16px;
+        margin-bottom: 4px;
+    }
+
+    .detail-time,
+    .detail-address {
+        font-size: 13px;
+    }
+
+    /* Map & RSVP - 버튼 크기 조정 */
+    .map-links,
+    .rsvp-section {
+        margin: 35px 0;
+        padding: 30px 20px;
+    }
+
+    .section-title {
+        font-size: 16px;
+        letter-spacing: 2px;
+        margin-bottom: 20px;
+    }
+
+    .map-buttons {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .map-button {
+        width: 100%;
+        padding: 14px 30px;
+        font-size: 14px;
+    }
+
+    .rsvp-description {
+        font-size: 14px;
+        margin: 15px 0 25px;
+    }
+
+    .rsvp-button {
+        padding: 16px 40px;
+        font-size: 15px;
+        letter-spacing: 1.5px;
+    }
+
+    .rsvp-note {
+        font-size: 11px;
+        margin-top: 12px;
+    }
+
+    /* Footer - 간격 조정 */
+    .letter-footer {
+        margin-top: 40px;
+        margin-bottom: 80px;
+        padding-top: 25px;
+        padding-bottom: 80px;
+    }
+
+    .footer-text {
+        font-size: 14px;
+        letter-spacing: 1.5px;
+    }
+
+    /* Close Button */
+    .close-button {
+        top: 15px;
+        right: 15px;
+        width: 35px;
+        height: 35px;
+        font-size: 26px;
+    }
+
+    /* Particles - 성능 최적화를 위해 줄임 */
+    .particle {
+        width: 3px;
+        height: 3px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* 작은 모바일 화면 */
+    .envelope {
+        width: 95vw;
+        max-width: 350px;
+    }
+
+    .wax-seal {
+        width: 85px;
+        height: 85px;
+    }
+
+    .click-hint {
+        top: -0px;
+        font-size: 10px;
+    }
+
+    .letter {
+        padding: 30px 18px;
+        margin: 8px;
+    }
+
+    .club-name {
+        font-size: 32px;
+        letter-spacing: 4px;
+    }
+
+    .subtitle {
+        font-size: 13px;
+        letter-spacing: 2px;
+    }
+
+    .greeting {
+        font-size: 16px;
+    }
+
+    .message-body {
+        font-size: 13px;
+    }
+
+    .detail-item {
+        padding: 15px 12px;
+    }
+
+    .detail-icon {
+        font-size: 22px;
+    }
+
+    .detail-value {
+        font-size: 15px;
+    }
+
+    .section-title {
+        font-size: 15px;
+    }
+
+    .close-button {
+        width: 32px;
+        height: 32px;
+        font-size: 24px;
+    }
+}

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIME 신년회 초대장</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating Particles Background -->
+    <div class="particles-container" id="particles"></div>
+
+    <!-- Envelope Container -->
+    <div class="envelope-container" id="envelopeContainer">
+        <div class="envelope" id="envelope">
+            <!-- Envelope Back (하단 본체) -->
+            <div class="envelope-back">
+                <img src="images/envelope-back.png" alt="봉투 하단" class="envelope-back-img">
+            </div>
+
+            <!-- Envelope Flap (상단 뚜껑) -->
+            <div class="envelope-flap" id="envelopeFlap">
+                <img src="images/envelope-flap.png" alt="봉투 상단" class="envelope-flap-img">
+            </div>
+
+            <!-- Wax Seal (실링 왁스) -->
+            <div class="wax-seal" id="waxSeal">
+                <img src="images/wax-seal.png" alt="실링 왁스" class="wax-seal-img">
+                <div class="click-hint">클릭하여 열기</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Letter Content -->
+    <div class="letter-container" id="letterContainer">
+        <div class="letter">
+            <!-- Decorative Header -->
+            <div class="letter-header">
+                <div class="golden-line"></div>
+                <div class="header-ornament"></div>
+                <h1 class="club-name">RIME</h1>
+                <div class="subtitle">신년회 초대장</div>
+                <div class="header-ornament bottom"></div>
+                <div class="golden-line"></div>
+            </div>
+
+            <!-- Invitation Message -->
+            <div class="invitation-message">
+                <p class="greeting">
+                    새해를 맞이하여<br>
+                    RIME 가족 여러분을 초대합니다
+                </p>
+                <p class="message-body">
+                    한 해의 마무리와 새로운 시작을 함께 축하하며<br>
+                    즐거운 시간을 보내고자 합니다.<br>
+                    <br>
+                    따뜻한 자리를 마련하였으니<br>
+                    귀한 걸음 부탁드립니다.
+                </p>
+            </div>
+
+            <!-- Event Details -->
+            <div class="event-details">
+                <div class="detail-item">
+                    <div class="detail-icon">📅</div>
+                    <div class="detail-content">
+                        <div class="detail-label">일시</div>
+                        <div class="detail-value">2026년 1월 10일 토요일</div>
+                        <div class="detail-time">오후 6시</div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-icon">📍</div>
+                    <div class="detail-content">
+                        <div class="detail-label">장소</div>
+                        <div class="detail-value">모드라운지 역삼점</div>
+                        <div class="detail-address">서울특별시 강남구 테헤란로22길 11 지하 1층</div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-icon">💰</div>
+                    <div class="detail-content">
+                        <div class="detail-label">참가비</div>
+                        <div class="detail-value">5~7만원</div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-icon">📞</div>
+                    <div class="detail-content">
+                        <div class="detail-label">문의</div>
+                        <div class="detail-value">010-2710-9037</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map Links -->
+            <div class="map-links">
+                <div class="section-title">오시는 길</div>
+                <div class="map-buttons">
+                    <a href="https://naver.me/G7V4sDTr" target="_blank" class="map-button naver">
+                        <span>네이버 지도</span>
+                    </a>
+                    <a href="https://maps.app.goo.gl/mvjsWxDmWFdKSQKz6" target="_blank" class="map-button google">
+                        <span>구글 지도</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- RSVP Section -->
+            <div class="rsvp-section">
+                <div class="section-title">참석 여부를 알려주세요</div>
+                <div class="rsvp-description">
+                    아래 버튼을 클릭하여 참석 여부를 등록해주시면<br>
+                    더욱 완벽한 준비를 할 수 있습니다.
+                </div>
+                <a href="https://forms.gle/qZrrupXuMwc3Y39K6" target="_blank" class="rsvp-button">
+                    <span>참석 여부 등록하기</span>
+                </a>
+                <div class="rsvp-note">
+                    * Google Forms로 이동합니다
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="letter-footer">
+                <div class="footer-ornament"></div>
+                <div class="footer-text">2026년을 함께 시작해요</div>
+                <div class="footer-ornament"></div>
+            </div>
+        </div>
+
+        <!-- Close Button -->
+        <button class="close-button" id="closeButton">
+            <span>×</span>
+        </button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
